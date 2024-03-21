@@ -16,6 +16,7 @@ const Auth = ({type} : {type: "signup" | "signin" }) => {
     async function sendRequest() {
         try{
             const response = await axios.post(`${BASE_BACKEND_URL}/api/v1/${type}`, input)
+            //console.log(response);
             if(response.status !== 200){
                 return alert("Error occured check the inupts and try again.")
             }

@@ -1,1 +1,1 @@
-export const BASE_BACKEND_URL = 'http://localhost:8787' 
+export const BASE_BACKEND_URL = 'https://backend.rushikesh1.workers.dev' 
