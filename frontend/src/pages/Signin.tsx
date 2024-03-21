@@ -14,7 +14,7 @@ const Signup = () => {
                 <Auth type="signin"/>
             </div>
             <div
-            className='invisible md:visible'
+            className=''
             >
                 <Quote />
             </div>

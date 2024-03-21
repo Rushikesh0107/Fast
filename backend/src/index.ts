@@ -3,6 +3,7 @@ import { Prisma, PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import {verify, sign} from "hono/jwt"
 import { createBlogInputs, signupInputs, updateBlogInputs } from 'rushikesh1-fast-common'
+import {cors} from 'hono/cors'
 
 const app = new Hono<{
   Bindings: {
@@ -13,6 +14,10 @@ const app = new Hono<{
     id: string
   }
 }>()
+
+app.use(cors({
+  origin: '*'
+}))
 
 app.use("/api/v1/blog/*", async (c, next) => {
   const prisma = new PrismaClient({
@@ -56,6 +61,7 @@ app.post('/api/v1/signup', async (c) => {
     const {success} = signupInputs.safeParse(body)
     
     if(!success){
+      c.status(400)
       return c.json({error: 'Invalid request'})
     }
 
@@ -68,10 +74,13 @@ app.post('/api/v1/signup', async (c) => {
     })
 
     if(!user){
+      c.status(500)
       return c.json({error: 'Something went wrong while creating user!'})
     }
 
-    return c.json({user})
+    const jwt = await sign({id : user.id}, c.env.JWT_SECRET)
+
+    return c.json({jwt})
 })
 
 app.post('/api/v1/signin', async (c) => {
@@ -91,6 +100,7 @@ app.post('/api/v1/signin', async (c) => {
     
 
     if(!success){
+      c.status(400)
       return c.json({error: 'Invalid request'})
     }
 
@@ -102,10 +112,12 @@ app.post('/api/v1/signin', async (c) => {
     })
 
     if(!user){
+      c.status(400)
       return c.json({error: 'Invalid email'})
     }
 
     if(user.password !== body.password){
+      c.status(400)
       return c.json({error: 'Invalid password'})
     }
 

@@ -3,7 +3,7 @@ import React from 'react'
 const Quote = () => {
   return (
     <div
-    className='bg-slate-200 flex justify-center items-center h-screen'
+    className='bg-slate-200 flex justify-center items-center h-screen p-5'
     >   
     <div
     className='max-w-xl'
