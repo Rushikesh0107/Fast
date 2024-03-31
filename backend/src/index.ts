@@ -31,7 +31,8 @@ app.use("/api/v1/blog/*", async (c, next) => {
   
 
   if(!token){
-    return c.json({error: 'Unauthorized'})
+    c.status(401)
+    return c.json({error: 'Unauthorized no token found !'})
   }
 
   const response = await verify(token, c.env.JWT_SECRET);
@@ -40,7 +41,8 @@ app.use("/api/v1/blog/*", async (c, next) => {
   
 
   if(!response.id){
-    return c.json({error: 'Unauthorized'})
+    c.status(401)
+    return c.json({error: 'Unauthorized access token might be expired'})
   }
 
   c.set('id', response.id)
@@ -113,12 +115,7 @@ app.post('/api/v1/signin', async (c) => {
 
     if(!user){
       c.status(400)
-      return c.json({error: 'Invalid email'})
-    }
-
-    if(user.password !== body.password){
-      c.status(400)
-      return c.json({error: 'Invalid password'})
+      return c.json({error: 'Invalid email or password!'})
     }
 
     const jwt = await sign({id: user.id}, c.env.JWT_SECRET)
@@ -147,7 +144,8 @@ app.post('/api/v1/blog',async  (c) => {
         title: body.title,
         content: body.content,
         authorId: userId,
-        published: true
+        published: true,
+        author: body.author
       }
     });
     return c.json({
